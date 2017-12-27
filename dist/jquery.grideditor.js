@@ -58,7 +58,9 @@ $.fn.gridEditor = function( options ) {
         var canvas,
             mainControls,
             addRowGroup,
-            htmlTextArea
+            htmlTextArea,
+            previewButton,
+            layoutDropdown
         ;
         var colClasses = ['col-md-', 'col-sm-', 'col-xs-'];
         var curColClassIndex = 0; // Index of the column class we are manipulating currently
@@ -125,7 +127,7 @@ $.fn.gridEditor = function( options ) {
             });
 
             // Buttons on right
-            var layoutDropdown = $('<div class="dropdown pull-right ge-layout-mode">' +
+            layoutDropdown = $('<div class="dropdown pull-right ge-layout-mode">' +
                 '<button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown"><span>Desktop</span></button>' +
                 '<ul class="dropdown-menu" role="menu">' +
                     '<li><a data-width="auto" title="Desktop"><span>Desktop</span></a></li>' +
@@ -151,6 +153,7 @@ $.fn.gridEditor = function( options ) {
                         canvas.empty().html(htmlTextArea.val()).show();
                         init();
                         htmlTextArea.hide();
+                        toggleMainControls(false);
                     } else {
                         deinit();
                         htmlTextArea
@@ -159,13 +162,14 @@ $.fn.gridEditor = function( options ) {
                             .show()
                         ;
                         canvas.hide();
+                        toggleMainControls(true);
                     }
 
                     htmlButton.toggleClass('active btn-danger');
                 })
                 .appendTo(btnGroup)
             ;
-            var previewButton = $('<button title="Preview" type="button" class="btn btn-xs btn-primary gm-preview"><span class="glyphicon glyphicon-eye-open"></span></button>')
+            previewButton = $('<button title="Preview" type="button" class="btn btn-xs btn-primary gm-preview"><span class="glyphicon glyphicon-eye-open"></span></button>')
                 .on('mouseenter', function() {
                     canvas.removeClass('ge-editing');
                 })
@@ -242,6 +246,12 @@ $.fn.gridEditor = function( options ) {
             canvas.find('.ge-tools-drawer').remove();
             removeSortable();
             runFilter();
+        }
+        
+        function toggleMainControls(disable){
+            addRowGroup.children().prop('disabled',disable);
+            previewButton.prop('disabled',disable).removeClass('active');
+            layoutDropdown.children().prop('disabled',disable);
         }
 
         function createRowControls() {
